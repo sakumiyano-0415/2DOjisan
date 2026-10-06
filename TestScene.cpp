@@ -6,10 +6,14 @@
 #include "Engine/Camera.h"
 #include "Engine/Text.h"
 #include "Engine/Input.h"
+#include "MovingPlatform.h"
 
 namespace
 {
 	Ground* pGround = nullptr;
+
+	// 動く床オブジェクト
+	MovingPlatform* pMovingPlatform = nullptr;
 
 	const float CAMERA_HEIGHT = 8.0f;
 
@@ -45,11 +49,28 @@ void TestScene::StartGame()
 	foodCount = 0;
 	isClear = false;
 
-	pPlayer_ = Instantiate<Player>(this);
-	pGround = Instantiate<Ground>(this);
+	// 地面を生成
+	pGround =
+		Instantiate<Ground>(this);
 
+	// 動く床を生成
+	// Playerより先に生成することで、
+	// 床の移動量をPlayerが取得できるようにする
+	pMovingPlatform =
+		Instantiate<MovingPlatform>(this);
+
+	// Playerを生成
+	pPlayer_ =
+		Instantiate<Player>(this);
+
+	// Playerに地面を設定
 	pPlayer_->SetGround(pGround);
 
+	// Playerに動く床を設定
+	pPlayer_->SetMovingPlatform(
+		pMovingPlatform);
+
+	// ゲーム開始時のカメラ位置
 	Camera::SetPosition(
 		{
 			pPlayer_->GetPosition().x,

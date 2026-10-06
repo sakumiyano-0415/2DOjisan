@@ -2,6 +2,7 @@
 #include "Engine/Model.h"
 #include "Engine/Input.h"
 #include "Ground.h"
+#include "MovingPlatform.h"
 #include <vector>
 
 namespace
@@ -82,7 +83,8 @@ Player::Player(GameObject* parent)
 	: GameObject(parent, "Player"),
 	hWalkModel_(-1),
 	hIdleModel_(-1),
-	ground_(nullptr)
+	ground_(nullptr),
+	movingPlatform_(nullptr)
 {
 }
 
@@ -161,7 +163,11 @@ void Player::Update()
 		//Z方向は常に固定
 		transform_.position_.z = START_POS.z;
 
+		//ブロックとの衝突
 		ResolveBlockCollision();
+
+		//動く床との衝突
+		ResolveMovingPlatformCollision();
 
 		return;
 	}
@@ -271,6 +277,9 @@ void Player::Update()
 
 	//ブロックとの衝突
 	ResolveBlockCollision();
+
+	//動く床との衝突
+	ResolveMovingPlatformCollision();
 
 	//横方向の壁衝突
 	XMVECTOR pos =
@@ -419,6 +428,41 @@ void Player::ResolveBlockCollision()
 	else if (transform_.position_.y > START_Y)
 	{
 		isGrounded = false;
+	}
+}
+
+void Player::ResolveMovingPlatformCollision()
+{
+	if (movingPlatform_ == nullptr)
+		return;
+
+	float playerBottom =
+		transform_.position_.y -
+		PLAYER_HALF_HEIGHT;
+
+	//動く床の上にいるか確認
+	bool onPlatform =
+		movingPlatform_->IsPlayerOnPlatform(
+			transform_.position_.x,
+			playerBottom);
+
+	if (onPlatform)
+	{
+		//床の上面にプレイヤーを配置
+		transform_.position_.y =
+			movingPlatform_->GetTopY() +
+			PLAYER_HALF_HEIGHT;
+
+		//落下速度を止める
+		jumpVelocity = 0.0f;
+
+		//地面にいる状態にする
+		isGrounded = true;
+		hasDoubleJumped = false;
+
+		//床の移動量をプレイヤーにも適用
+		transform_.position_.x +=
+			movingPlatform_->GetDeltaX();
 	}
 }
 

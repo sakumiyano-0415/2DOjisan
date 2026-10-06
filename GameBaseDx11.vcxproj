@@ -176,6 +176,7 @@
     <ClCompile Include="Engine\Texture.cpp" />
     <ClCompile Include="Food.cpp" />
     <ClCompile Include="Ground.cpp" />
+    <ClCompile Include="MovingPlatform.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="TestScene.cpp" />
   </ItemGroup>
@@ -206,6 +207,7 @@
     <ClInclude Include="Engine\Texture.h" />
     <ClInclude Include="Food.h" />
     <ClInclude Include="Ground.h" />
+    <ClInclude Include="MovingPlatform.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="TestScene.h" />
   </ItemGroup>

@@ -3,6 +3,7 @@
 #include "Engine/SphereCollider.h"
 
 class Ground;//前方宣言
+class MovingPlatform;
 
 class Player :
     public GameObject
@@ -19,11 +20,19 @@ public:
 	void Draw() override;
 	//開放
 	void Release() override;
-	void SetGround(Ground* ground) { 
+	void SetGround(Ground* ground) {
 		ground_ = ground;
 	}
+
+	void SetMovingPlatform(
+		MovingPlatform* movingPlatform)
+	{
+		movingPlatform_ = movingPlatform;
+	}
+
 	void OnCollision(GameObject* pTarget) override;
 	void ResolveBlockCollision();
+	void ResolveMovingPlatformCollision();
 private:
 	bool HandleInput();                                          // 入力処理、ブレーキ中ならtrue
 	bool UpdateTurn();                                           // 回転処理、回転中ならtrue
@@ -32,5 +41,6 @@ private:
 	int hWalkModel_;
 	int hIdleModel_;//待機アニメーションのモデルハンドル
 	Ground* ground_;//地面オブジェクトのポインタ
+	MovingPlatform* movingPlatform_;//動く床オブジェクトのポインタ
 };
 
